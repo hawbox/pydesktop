@@ -3,16 +3,17 @@ import sys
 import threading
 from http.server import BaseHTTPRequestHandler, HTTPServer, SimpleHTTPRequestHandler
 import json
+from datetime import time
 
 from lib import route
-from lib.crawler import execute_regex
-
 from lib.params_parser import parse_params
+
 
 host = '127.0.0.1'
 port = 8083
 server_address = (host, port)
 base_url = 'http://' + host + ':' + str(port)
+
 
 try:
     import msvcrt
@@ -23,9 +24,10 @@ except:
 
 class testHTTPServer_RequestHandler(SimpleHTTPRequestHandler):
     route_configurator_method = None
+    application_params = None
     def __init__(self, *args, directory=None, **kwargs):        
         if self.route_configurator_method:
-            self.route_configurator_method()
+            self.route_configurator_method()        
         super().__init__(*args, **kwargs)
         
 
@@ -132,8 +134,8 @@ class testHTTPServer_RequestHandler(SimpleHTTPRequestHandler):
             # Send headers
             #self.data_string = self.rfile.read(int(self.headers['Content-Length']))
 
-            try:                
-                self.params = []
+            try:                              
+                self.params = {}
                 if len(path_splited) > 1:
                     self.params = parse_params(path_splited[1], 'querystring')
 
@@ -182,7 +184,7 @@ class testHTTPServer_RequestHandler(SimpleHTTPRequestHandler):
         sendReply = len(mimetype) > 0
         
         if sendReply == True:
-            # Send headers
+            # Send headers            
             self.data_string = self.rfile.read(int(self.headers['Content-Length']))
             self.params = parse_params(self.data_string, self.headers.get_content_type())
 
@@ -237,16 +239,16 @@ def chek_key_press(server_class):
             #check_fl_th            
             break
 
-
 class HTTPServerBreak(HTTPServer):
     def service_actions(self):        
         x = kbfunc()                    
         if x == 4: # Ctrl-D            
             raise KeyboardInterrupt('Execution interrupted by user.')        
 
-def serve(route_configurator, debugging = False):    
-    print('starting server...')
+def get_server(route_configurator, app_params, debugging = False):    
+    print('starting server...')    
     testHTTPServer_RequestHandler.route_configurator_method = route_configurator
+    testHTTPServer_RequestHandler.application_params = app_params
     httpd = HTTPServerBreak(server_address, testHTTPServer_RequestHandler)
     print('running server at ' + base_url + '...')
     print('To stop, press CTRL + D on windows or CTRL + C on UNIX based systems')
@@ -255,8 +257,9 @@ def serve(route_configurator, debugging = False):
     #  server_address = ('127.0.0.1', 8081)
     #th_check_press = threading.Thread(target=chek_key_press, args=(httpd,))
     #th_check_press.start()
-    httpd.serve_forever()
+    #httpd.serve_forever()
+    return httpd
      
-    raise Exception('Server closed by user.')
+    #raise Exception('Server closed by user.')
 
 #serve()

@@ -1,0 +1,20 @@
+<link rel="stylesheet" href="/app/menu/menu.css">
+
+<nav class="dropdownmenu">
+    <ul>
+      <li><a href="#">Vedas</a>
+        <ul id="submenu">
+          <li><a href="#!" onclick="openPage('/app/venda')">Inserir vendas</a></li>
+          <li><a href="#!" onclick="openPage('/app/caixa')">Caixa</a></li>          
+        </ul>
+      </li>
+      <li><a href="#!">Cadastro</a>
+        <ul id="submenu">
+            <li><a href="#!" onclick="openPage('/app/produto')">Produto</a></li>       
+        </ul>  
+       </li>
+       <li>
+           <a href="#!" onclick="location.reload();alert('reload')">Recarregar</a>
+       </li>
+    </ul>
+  </nav>

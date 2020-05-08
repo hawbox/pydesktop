@@ -14,6 +14,7 @@ def include_templates(text):
                 with open(PROJECT_ROOT + template, 'r') as template_file:
                     text_file = template_file.read()
                 text = text.replace(completo, text_file)
+                text = include_templates(text)
             except FileNotFoundError as e:
                 raise Exception(str(e))
             except Exception as e:
