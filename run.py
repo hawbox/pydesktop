@@ -11,6 +11,6 @@ if __name__ == '__main__':
     server_thread.start()
        
     window.closing += lambda : server.shutdown()
-    window.closing += lambda : window.destroy()
+    #window.closing += lambda : window.destroy()
     webview.start(debug=app_params['debug'])
 
